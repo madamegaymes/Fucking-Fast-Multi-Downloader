@@ -1,7 +1,6 @@
 # Fucking-Fast-Multi-Downloader
 This Tool Helps To Download Multiple Files Easily From fuckingfast.co
 
----
 
 ## Features
 - **Link Processing**: Reads links from an `input.txt` file for sequential processing.
@@ -11,7 +10,7 @@ This Tool Helps To Download Multiple Files Easily From fuckingfast.co
 - **Error Handling**: Skips and logs links if any issues occur during processing.
 - **Link Removal**: Removes successfully processed links from the `input.txt` file to avoid duplicate processing.
 
----
+
 
 ## Prerequisites
 Ensure you have the following installed before running the script:
@@ -22,7 +21,7 @@ Ensure you have the following installed before running the script:
   - `tqdm`
   - `colorama`
 
----
+
 
 ## Installation
 1. Clone the repository:
@@ -35,7 +34,7 @@ Ensure you have the following installed before running the script:
    pip install -r requirements.txt
    ```
 
----
+
 
 ## Usage
 1. **Prepare Input Links**: Add your URLs to `input.txt`, one per line.
@@ -48,25 +47,6 @@ Ensure you have the following installed before running the script:
    - Extract and download files to the `downloads` folder.
    - Remove processed links from `input.txt`.
 
----
-
-## Example Logs
-The script uses a custom console class for enhanced logging:
-
-- **Info Log**:
-  ```
-  12:34:56 » INFO   • Started Processing : https://example.com/download-page...
-  ```
-- **Success Log**:
-  ```
-  12:35:10 » SUCC   • Successfully Downloaded File : downloads/example_file.zip...
-  ```
-- **Error Log**:
-  ```
-  12:36:20 » ERRR   • Failed To Fetch Page : 404
-  ```
-
----
 
 ## Folder Structure
 ```
@@ -85,17 +65,14 @@ You can modify the script to:
 - Customize headers for HTTP requests (`headers` dictionary).
 - Change the download directory (`downloads_folder` variable).
 
----
 
 ## License
 This project is licensed under the MIT License. See the `LICENSE` file for details.
 
----
 
 ## Contributions
 Feel free to fork, improve, and submit pull requests. For any issues or feature requests, create a ticket in the [issues section](https://github.com/yourusername/web-scraper-downloader/issues).
 
----
 
 ## Disclaimer
 This script is intended for educational purposes. Ensure you have proper permissions before scraping or downloading from any website.
