@@ -3,15 +3,6 @@ This Tool Helps To Download Multiple Files Easily From fuckingfast.co
 
 It Can Be Used To Get Multiple Parts Easily For Games In fitgirl-repacks.site
 
-## Features
-- **Link Processing** : Reads links from an `input.txt` file for sequential processing.
-- **File Downloading** : Extracts downloadable URLs from webpage scripts and downloads files to a `downloads` folder.
-- **Progress Tracking** : Displays real-time progress bars for downloads.
-- **Logging** : Provides detailed console logs with timestamps and color-coded messages for success, errors, warnings, and general information.
-- **Error Handling** : Skips and logs links if any issues occur during processing.
-- **Link Removal** : Removes successfully processed links from the `input.txt` file to avoid duplicate processing.
-
-
 
 ## Prerequisites
 Ensure you have the following installed before running the script :
