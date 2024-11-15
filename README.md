@@ -36,7 +36,8 @@ Ensure you have the following installed before running the script :
 
 ## Extra
   - You can use `link_extract.py` to get all the links directly.
-  - Just copy-paste the html block in the code where all the fuckingfast.co links exist.
+  - Just copy the html block where all the direct links exist.
+  - Then paste the block inside the script in the main function.
 
 # Disclaimer
 This tool is created for educational purposes and ethical use only. Any misuse of this tool for malicious purposes is not condoned. The developers of this tool are not responsible for any illegal or unethical activities carried out using this tool.
