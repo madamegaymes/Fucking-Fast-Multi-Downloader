@@ -36,7 +36,7 @@ Ensure you have the following installed before running the script :
 
 ## Extra
   - You can use `link_extract.py` to get all the links directly.
-  - Just copy the html block where all the direct links exist.
+  - Just copy the html block where all the direct links exists.
   - Then paste the block inside the script in the main function.
 
 # Disclaimer
