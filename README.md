@@ -1,5 +1,5 @@
 # Fucking-Fast-Multi-Downloader
-This Tool Helps To Download Multiple Files Easily From fuckingfast.co
+This Tool Helps To Download Multiple Files Easily From fuckingfast.co.
 `It Can Be Used To Download Multiple Parts For Games In fitgirl-repacks.site`
 
 ## Features
