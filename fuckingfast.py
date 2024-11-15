@@ -74,6 +74,7 @@ def download_file(download_url, output_path):
 def remove_link(processed_link, input_file='input.txt'):
     with open(input_file, 'r') as file:
         links = file.readlines()
+        
     with open(input_file, 'w') as file:
         for link in links:
             if link.strip() != processed_link:
