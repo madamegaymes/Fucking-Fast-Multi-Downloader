@@ -16,7 +16,7 @@ It Can Be Used To Get Multiple Parts Easily For Games In fitgirl-repacks.site
 ## Prerequisites
 Ensure you have the following installed before running the script :
 - Python 3.8+
-- Required Python packages ( install with `pip install -r requirements.txt` ) :
+- Required Python packages :
   - `requests`
   - `beautifulsoup4`
   - `tqdm`
