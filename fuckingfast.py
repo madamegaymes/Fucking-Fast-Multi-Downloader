@@ -54,7 +54,7 @@ def download_file(download_url, output_path):
     response = requests.get(download_url, stream=True)
     if response.status_code == 200:
         total_size = int(response.headers.get('content-length', 0))
-        block_size = 1024
+        block_size = 8192
 
         with open(output_path, 'wb') as f, tqdm(
             total=total_size,
