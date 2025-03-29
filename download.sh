@@ -3,68 +3,56 @@
 input="input.txt"
 icon="$PWD/fg.jpg"
 appname="FitGirl Repack Downloader"
-html="fitgirl.html"
-down=0
-append=0
+extract=0
+
+if [[ -f $input ]]; then
+    html=$(cat input.txt)
+fi
+
+usage() {
+cat << EOF
+Usage: ./$(basename -- "$0") [options]
+
+Options:
+                        | By default, assume input.txt is just a list of URLs
+    -e, --extract-urls  | Assume input.txt is HTML and extract the links from it
+    -h, --help          | Print this help message
+EOF
+}
 
 case $1 in
-    -a|--append)
-        append=1
-        curl -s "$2" > $html
+    -e|--extract-urls)
+        extract=1
     ;;
-    -d|--download)
-        down=1
-    ;;
-    *)
-        curl -s "$1" > $html
+    -h|--help)
+        usage
+        exit 0
     ;;
 esac
 
-data="$(cat $html)"
-
-if [[ -z $data ]] && [[ $down -eq 0 ]]; then
-    echo "Missing html data"
+if [[ -z $html ]]; then
+    echo "Missing input URLs"
     exit 1
 fi
 
 if [[ ! -d .venv ]]; then
-    python -m venv .venv
-    source .venv/bin/activate
-    pip install -r requirements.txt
+    python -m venv .venv || exit 1
+    source .venv/bin/activate || exit 1
+    pip install -r requirements.txt || exit 1
 else
-    source .venv/bin/activate
+    source .venv/bin/activate || exit 1
 fi
 
-if [[ $down -eq 0 ]]; then
-    echo "Scraping links from URL..."
-    if [[ $append == 0 ]]; then
-        echo "$data" | grep 'https://fuckingfast.co/' | awk '{print $2}' | cut -c 6- - | sed 's/"//g' > $input
-    else
-        echo "$data" | grep 'https://fuckingfast.co/' | awk '{print $2}' | cut -c 6- - | sed 's/"//g' >> $input
-    fi
+if [[ $extract -eq 1 ]]; then
+    echo "Cleaning HTML URLs..."
+    echo "$html" | grep 'https://fuckingfast.co/' | awk '{print $2}' | cut -c 6- - | sed 's/"//g' > $input
 fi
 
-if nano -V >/dev/null 2>&1; then
-    echo "Searching for selective and optional files..."
-    grep -E "(selective)|(optional)" $input
-    read -rp "Need to remove any selective or optional files before downloading? (y/N): " CONTINUE
-    case $CONTINUE in
-        Y|y|Yes|yes|YES) nano $input;;
-    esac
-fi
-
-if [[ $append -eq 0 ]] || [[ $down -eq 1 ]]; then
-    echo "Downloading files from $input..."
-    if notify-send -v >/dev/null 2>&1; then
-        python fuckingfast.py || notify-send -a "$appname" -i "$icon" -u critical "Error" "Something went wrong trying to download the links from $input"
-        notify-send -a "$appname" -i "$icon" "Completed" "Downloaded all fuckingfast links from $input"
-    else
-        python fuckingfast.py || echo "ERROR: Something went wrong trying to download the links from $input"
-        echo "Downloaded all fuckingfast links from $input"
-    fi
-    rm $input
+echo "Downloading files from $input..."
+if notify-send -v >/dev/null 2>&1; then
+    python fuckingfast.py || notify-send -a "$appname" -i "$icon" -u critical "Error" "Something went wrong trying to download the links from $input"
+    notify-send -a "$appname" -i "$icon" "Completed" "Downloaded all fuckingfast links from $input"
 else
-    echo "Appended download links to existing $input"
+    python fuckingfast.py || echo "ERROR: Something went wrong trying to download the links from $input"
+    echo "Downloaded all fuckingfast links from $input"
 fi
-
-rm $html
