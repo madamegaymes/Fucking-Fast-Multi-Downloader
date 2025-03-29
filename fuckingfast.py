@@ -35,8 +35,9 @@ class console:
     def input(self, message):
         return input(f"{self.colors['lightblack']}{self.timestamp()} » {self.colors['lightcyan']}INPUT   {self.colors['lightblack']}• {self.colors['white']}{message}{self.colors['reset']}")
 
-downloads_folder = "downloads"
-os.makedirs(downloads_folder, exist_ok=True)
+downloads_folder = "/home/deck/Games/installers"
+if not os.path.exists(downloads_folder):
+    os.makedirs(downloads_folder, exist_ok=True)
 log = console()
 log.clear()
 
