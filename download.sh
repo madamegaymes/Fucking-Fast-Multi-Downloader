@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
-input="input.txt"
-icon="$PWD/fg.jpg"
+working_dir=$( dirname -- "$( readlink -f -- "$0"; )"; )
+input="$working_dir/input.txt"
+md5_results="$working_dir/md5.txt"
+icon="$working_dir/fg.jpg"
 appname="FitGirl Repack Downloader"
 extract=0
 download_dir="$HOME/Games/installers"
@@ -9,6 +11,8 @@ download_dir="$HOME/Games/installers"
 if [[ -f $input ]]; then
     html=$(cat input.txt)
 fi
+
+echo "" > "$md5_results"
 
 usage() {
 cat << EOF
@@ -76,18 +80,25 @@ if find "$download_dir" -type f -name "*.rar" >/dev/null 2>&1; then
         mkdir -p "$game"
         echo "Found rar files for $game..."
         unrar x "${part_one[0]}" "$game/" || continue
-        mapfile -t checksums < "$game/MD5/fitgirl-bins.md5"
+        mapfile -t checksums < "$game/MD5/fitgirl-bins.md5" || continue
         checksums=("${checksums[@]:1}")
-        echo "Verify MD5 checksums..."
+        echo "Verify MD5 checksums for $game..."
         for line in "${checksums[@]}"; do
-            expected_sum=$(echo "$line" | awk '{print $1}')
             path=$(echo "$line" | awk -F"\\" '{print $NF}')
+            path=${path/$'\r'}
+            expected_sum=$(echo "$line" | awk '{print $1}')
             to_check="$game/$path"
-            received_sum=$(md5sum "${to_check/$'\r'}" | awk '{print $1}')
+            received_sum=""
+            if [[ -f $to_check ]]; then
+                received_sum=$(md5sum "$to_check" | awk '{print $1}')
+            elif [[ $path == *"optional"* ]]; then
+                echo -e "SKIPPED: $path does not exist and is optional." | tee -a "$md5_results"
+                continue
+            fi
             if [[ $expected_sum == "$received_sum" ]]; then
-                echo -e "PASSED: $received_sum  $to_check"
+                echo -e "PASSED: $received_sum  $path" >> "$md5_results"
             else
-                echo -e "FAILED: $to_check does not match MD5\nExpected: $expected_sum\nReceived: $received_sum"
+                echo -e "FAILED: $path does not match MD5\nExpected: $expected_sum\nReceived: $received_sum" >> "$md5_results"
                 msg="Some files failed verification."
                 ((failure++))
                 failed+=" $path"
@@ -105,4 +116,5 @@ if find "$download_dir" -type f -name "*.rar" >/dev/null 2>&1; then
     if [[ $failure -gt 0 ]]; then
         echo "$failed"
     fi
+    cat "$md5_results"
 fi
