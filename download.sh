@@ -2,7 +2,6 @@
 
 working_dir=$( dirname -- "$( readlink -f -- "$0"; )"; )
 input="$working_dir/input.txt"
-md5_results="$working_dir/md5.txt"
 icon="$working_dir/fg.jpg"
 appname="FitGirl Repack Downloader"
 download_dir="$HOME/Games/installers"
@@ -14,7 +13,6 @@ fi
 html=$(cat input.txt)
 
 echo "" > "$input"
-echo "" > "$md5_results"
 
 usage() {
 cat << EOF
@@ -48,6 +46,8 @@ fi
 echo "$html" | while IFS="" read -r p || [ -n "$p" ]; do
     if [[ ! "$p" =~ ^https ]]; then
         echo "$p" | awk -F'"' '{print $2}' >> "$input"
+    else
+        echo "$p" >> "$input"
     fi
 done
 
@@ -78,30 +78,10 @@ if find "$download_dir" -type f -name "*.rar" >/dev/null 2>&1; then
         mkdir -p "$game"
         echo "Found rar files for $game..."
         unrar x "${part_one[0]}" "$game/" || continue
-        mapfile -t checksums < "$game/MD5/fitgirl-bins.md5" || continue
-        checksums=("${checksums[@]:1}")
-        echo "Verify MD5 checksums for $game..."
-        for line in "${checksums[@]}"; do
-            path=$(echo "$line" | awk -F"\\" '{print $NF}')
-            path=${path/$'\r'}
-            expected_sum=$(echo "$line" | awk '{print $1}')
-            to_check="$game/$path"
-            received_sum=""
-            if [[ -f $to_check ]]; then
-                received_sum=$(md5sum "$to_check" | awk '{print $1}')
-            elif [[ $path == *"optional"* ]]; then
-                echo -e "SKIPPED: $path does not exist and is optional." | tee -a "$md5_results"
-                continue
-            fi
-            if [[ $expected_sum == "$received_sum" ]]; then
-                echo -e "PASSED: $received_sum  $path" >> "$md5_results"
-            else
-                echo -e "FAILED: $path does not match MD5\nExpected: $expected_sum\nReceived: $received_sum" >> "$md5_results"
-                msg="Some files failed verification."
-                ((failure++))
-                failed+=" $path"
-            fi
-        done
+        if ! ./verify.sh "$game"; then
+            ((failed++))
+            failed+=" $game"
+        fi
     done
     if notify-send -v >/dev/null 2>&1; then
         if [[ $failure -gt 0 ]]; then
@@ -114,5 +94,4 @@ if find "$download_dir" -type f -name "*.rar" >/dev/null 2>&1; then
     if [[ $failure -gt 0 ]]; then
         echo "$failed"
     fi
-    cat "$md5_results"
 fi

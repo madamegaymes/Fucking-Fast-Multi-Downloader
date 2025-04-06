@@ -54,4 +54,7 @@ done
 echo -e "\n$msg\n"
 if [[ $failures -gt 0 ]]; then
     echo -e "Total: $failures\n$failed\n"
+    exit 1
+else
+    exit 0
 fi
