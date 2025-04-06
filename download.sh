@@ -2,6 +2,7 @@
 
 working_dir=$( dirname -- "$( readlink -f -- "$0"; )"; )
 input="$working_dir/input.txt"
+verify="$working_dir/verify.sh"
 icon="$working_dir/fg.jpg"
 appname="FitGirl Repack Downloader"
 download_dir="$HOME/Games/installers"
@@ -78,7 +79,7 @@ if find "$download_dir" -type f -name "*.rar" >/dev/null 2>&1; then
         mkdir -p "$game"
         echo "Found rar files for $game..."
         unrar x "${part_one[0]}" "$game/" || continue
-        if ! ./verify.sh "$game"; then
+        if ! $verify "$game"; then
             ((failed++))
             failed+=" $game"
         fi
