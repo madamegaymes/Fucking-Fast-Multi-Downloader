@@ -5,30 +5,27 @@ input="$working_dir/input.txt"
 md5_results="$working_dir/md5.txt"
 icon="$working_dir/fg.jpg"
 appname="FitGirl Repack Downloader"
-extract=0
 download_dir="$HOME/Games/installers"
 
-if [[ -f $input ]]; then
-    html=$(cat input.txt)
+if [[ ! -f $input ]]; then
+    nano "$input"
 fi
 
+html=$(cat input.txt)
+
+echo "" > "$input"
 echo "" > "$md5_results"
 
 usage() {
 cat << EOF
-Usage: ./$(basename -- "$0") [options]
+Usage: ./$(basename -- "$0")
 
-Options:
-                        | By default, assume input.txt is just a list of URLs
-    -e, --extract-urls  | Assume input.txt is HTML and extract the links from it
-    -h, --help          | Print this help message
+If input.txt does not exist, nano will open the file for you to paste in URLs.
+URLs can be raw or contained in HTML tags as copied from fitgirl's site.
 EOF
 }
 
 case $1 in
-    -e|--extract-urls)
-        extract=1
-    ;;
     -h|--help)
         usage
         exit 0
@@ -48,10 +45,11 @@ else
     source .venv/bin/activate || exit 1
 fi
 
-if [[ $extract -eq 1 ]]; then
-    echo "Cleaning HTML URLs..."
-    echo "$html" | grep 'https://fuckingfast.co/' | awk '{print $2}' | cut -c 6- - | sed 's/"//g' > $input
-fi
+echo "$html" | while IFS="" read -r p || [ -n "$p" ]; do
+    if [[ ! "$p" =~ ^https ]]; then
+        echo "$p" | awk -F'"' '{print $2}' >> "$input"
+    fi
+done
 
 echo "Downloading files from $input..."
 if notify-send -v >/dev/null 2>&1; then
