@@ -95,3 +95,5 @@ if find "$download_dir" -type f -name "*.rar" >/dev/null 2>&1; then
         echo "$failed"
     fi
 fi
+
+rm "$input"
